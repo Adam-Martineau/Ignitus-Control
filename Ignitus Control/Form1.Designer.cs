@@ -38,12 +38,14 @@
             this.emergencyStopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refuelingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.customCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.configureSerialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.RxRichTextBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.TxRichTextBox = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -96,22 +98,27 @@
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.saveAsToolStripMenuItem.Text = "Save as..";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // connectDeviceToolStripMenuItem
             // 
+            this.connectDeviceToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.connectDeviceToolStripMenuItem.Name = "connectDeviceToolStripMenuItem";
             this.connectDeviceToolStripMenuItem.Size = new System.Drawing.Size(150, 29);
             this.connectDeviceToolStripMenuItem.Text = "Connect Device";
-            this.connectDeviceToolStripMenuItem.Click += new System.EventHandler(this.connectDeviceToolStripMenuItem_Click);
+            this.connectDeviceToolStripMenuItem.DropDownOpening += new System.EventHandler(this.connectDeviceToolStripMenuItem_DropDownOpening);
+            this.connectDeviceToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.connectDeviceToolStripMenuItem_DropDownItemClicked);
             // 
             // commandsToolStripMenuItem
             // 
             this.commandsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.emergencyStopToolStripMenuItem,
             this.launchToolStripMenuItem,
-            this.refuelingToolStripMenuItem});
+            this.refuelingToolStripMenuItem,
+            this.customCommandToolStripMenuItem});
+            this.commandsToolStripMenuItem.Enabled = false;
             this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
             this.commandsToolStripMenuItem.Size = new System.Drawing.Size(120, 29);
             this.commandsToolStripMenuItem.Text = "Commands";
@@ -119,25 +126,33 @@
             // emergencyStopToolStripMenuItem
             // 
             this.emergencyStopToolStripMenuItem.Name = "emergencyStopToolStripMenuItem";
-            this.emergencyStopToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.emergencyStopToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
             this.emergencyStopToolStripMenuItem.Text = "Emergency Stop";
             // 
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
             this.launchToolStripMenuItem.Text = "Launch";
             // 
             // refuelingToolStripMenuItem
             // 
             this.refuelingToolStripMenuItem.Name = "refuelingToolStripMenuItem";
-            this.refuelingToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.refuelingToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
             this.refuelingToolStripMenuItem.Text = "Refueling";
+            // 
+            // customCommandToolStripMenuItem
+            // 
+            this.customCommandToolStripMenuItem.Name = "customCommandToolStripMenuItem";
+            this.customCommandToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.customCommandToolStripMenuItem.Text = "Custom command";
+            this.customCommandToolStripMenuItem.Click += new System.EventHandler(this.customCommandToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.configureSerialToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.helpToolStripMenuItem.Text = "Help";
@@ -147,6 +162,14 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(270, 34);
             this.toolStripMenuItem1.Text = "Info";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // configureSerialToolStripMenuItem
+            // 
+            this.configureSerialToolStripMenuItem.Name = "configureSerialToolStripMenuItem";
+            this.configureSerialToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.configureSerialToolStripMenuItem.Text = "Configure Serial";
+            this.configureSerialToolStripMenuItem.Click += new System.EventHandler(this.configureSerialToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -156,24 +179,26 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.richTextBox1);
+            this.splitContainer1.Panel1.Controls.Add(this.RxRichTextBox);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.richTextBox2);
+            this.splitContainer1.Panel2.Controls.Add(this.TxRichTextBox);
             this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Size = new System.Drawing.Size(1552, 750);
             this.splitContainer1.SplitterDistance = 1041;
             this.splitContainer1.TabIndex = 2;
             // 
-            // richTextBox1
+            // RxRichTextBox
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(12, 41);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(1026, 706);
-            this.richTextBox1.TabIndex = 1;
-            this.richTextBox1.Text = "";
+            this.RxRichTextBox.Enabled = false;
+            this.RxRichTextBox.Location = new System.Drawing.Point(12, 41);
+            this.RxRichTextBox.Name = "RxRichTextBox";
+            this.RxRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.RxRichTextBox.Size = new System.Drawing.Size(1026, 706);
+            this.RxRichTextBox.TabIndex = 1;
+            this.RxRichTextBox.Text = "";
             // 
             // label1
             // 
@@ -184,13 +209,15 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "RX";
             // 
-            // richTextBox2
+            // TxRichTextBox
             // 
-            this.richTextBox2.Location = new System.Drawing.Point(3, 41);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.Size = new System.Drawing.Size(501, 706);
-            this.richTextBox2.TabIndex = 1;
-            this.richTextBox2.Text = "";
+            this.TxRichTextBox.Enabled = false;
+            this.TxRichTextBox.Location = new System.Drawing.Point(3, 41);
+            this.TxRichTextBox.Name = "TxRichTextBox";
+            this.TxRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.TxRichTextBox.Size = new System.Drawing.Size(501, 706);
+            this.TxRichTextBox.TabIndex = 1;
+            this.TxRichTextBox.Text = "";
             // 
             // label2
             // 
@@ -244,8 +271,10 @@
         private SplitContainer splitContainer1;
         private Label label1;
         private Label label2;
-        private RichTextBox richTextBox1;
-        private RichTextBox richTextBox2;
+        private RichTextBox RxRichTextBox;
+        private RichTextBox TxRichTextBox;
         private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem customCommandToolStripMenuItem;
+        private ToolStripMenuItem configureSerialToolStripMenuItem;
     }
 }
