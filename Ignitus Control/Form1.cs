@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.IO.Ports;
 using Microsoft.VisualBasic;
 
@@ -8,7 +9,7 @@ namespace Ignitus_Control
     {
         SerialPort _serialPort;
         string _log = "";
-        string sessionID = DateTime.Now.ToString();
+        string sessionID = DateTime.Now.ToString().Replace(":", "-").Replace(" ", "_");
 
         public Form1()
         {
@@ -81,6 +82,7 @@ namespace Ignitus_Control
             if (_serialPort.IsOpen)
             {
                 string command = Interaction.InputBox("Command:", "Custom Command");
+                writeLineTextBox("tx", command);
                 _serialPort.Write(command);
             }
             else
@@ -143,15 +145,31 @@ namespace Ignitus_Control
         {
             _log += s + "\n\r";
 
-            using (StreamWriter writer = new StreamWriter($"/{sessionID}/log.txt"))
+            //auto save to local temp folder
+            string path = $"{sessionID}/log.txt";
+
+            if (File.Exists(path))
             {
-                writer.WriteLine(s + "\n\r");
+                using (StreamWriter writer = File.CreateText(path))
+                {
+                    writer.WriteLine(s);
+                }
+            }
+            else
+            {
+                using (StreamWriter writer = File.AppendText(path))
+                {
+                    writer.WriteLine(s);
+                }
             }
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        private void infoToolStripMenu_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Version: Beta 0.1 \n\r By Adam Martineau from UdeS \n\r https://github.com/Adam-Martineau/Ignitus-Control", "Info");
+            MessageBox.Show("Version: Beta 0.1 \n\r" +
+                            "By Adam Martineau from UdeS" +
+                            "\n\r https://github.com/Adam-Martineau/Ignitus-Control"
+                            , "Info");
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

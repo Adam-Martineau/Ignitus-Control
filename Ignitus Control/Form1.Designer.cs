@@ -98,7 +98,7 @@
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(181, 34);
             this.saveAsToolStripMenuItem.Text = "Save as..";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
@@ -126,33 +126,33 @@
             // emergencyStopToolStripMenuItem
             // 
             this.emergencyStopToolStripMenuItem.Name = "emergencyStopToolStripMenuItem";
-            this.emergencyStopToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.emergencyStopToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.emergencyStopToolStripMenuItem.Text = "Emergency Stop";
             // 
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.launchToolStripMenuItem.Text = "Launch";
             // 
             // refuelingToolStripMenuItem
             // 
             this.refuelingToolStripMenuItem.Name = "refuelingToolStripMenuItem";
-            this.refuelingToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.refuelingToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.refuelingToolStripMenuItem.Text = "Refueling";
             // 
             // customCommandToolStripMenuItem
             // 
             this.customCommandToolStripMenuItem.Name = "customCommandToolStripMenuItem";
-            this.customCommandToolStripMenuItem.Size = new System.Drawing.Size(262, 34);
+            this.customCommandToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.customCommandToolStripMenuItem.Text = "Custom command";
             this.customCommandToolStripMenuItem.Click += new System.EventHandler(this.customCommandToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1,
-            this.configureSerialToolStripMenuItem});
+            this.configureSerialToolStripMenuItem,
+            this.toolStripMenuItem1});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.helpToolStripMenuItem.Text = "Help";
@@ -162,7 +162,7 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(270, 34);
             this.toolStripMenuItem1.Text = "Info";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.infoToolStripMenu_Click);
             // 
             // configureSerialToolStripMenuItem
             // 
