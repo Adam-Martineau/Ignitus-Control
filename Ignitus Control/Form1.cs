@@ -17,7 +17,7 @@ namespace Ignitus_Control
 
             //Serial Port Config
             _serialPort = new SerialPort();
-            _serialPort.BaudRate = 9600;          
+            _serialPort.BaudRate = 9600;
             _serialPort.DataReceived += new SerialDataReceivedEventHandler(dataReceived);
 
             logging(sessionID);
@@ -64,30 +64,18 @@ namespace Ignitus_Control
 
             try
             {
+                //Starting the serial connection
                 _serialPort.Open();
                 connectDeviceToolStripMenuItem.DropDownItems.Clear();
                 connectDeviceToolStripMenuItem.Text = "Disconnect Device";
                 connectionStatusLabel.Text = "Device connected";
                 connectionStatusLabel.ForeColor = Color.Green;
                 commandsToolStripMenuItem.Enabled = true;
+                writeLineTextBox("rx", "Serial connection opened on: " + _serialPort.PortName.ToString());
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void customCommandToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (_serialPort.IsOpen)
-            {
-                string command = Interaction.InputBox("Command:", "Custom Command");
-                writeLineTextBox("tx", command);
-                _serialPort.Write(command);
-            }
-            else
-            {
-                MessageBox.Show("No device is connected!", "Error!");
             }
         }
 
@@ -148,6 +136,9 @@ namespace Ignitus_Control
             //auto save to local temp folder
             string path = $"{sessionID}/log.txt";
 
+            if (!Directory.Exists($"{sessionID}"))
+                Directory.CreateDirectory($"{sessionID}");
+
             if (File.Exists(path))
             {
                 using (StreamWriter writer = File.CreateText(path))
@@ -175,6 +166,53 @@ namespace Ignitus_Control
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void txTextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (_serialPort.IsOpen)
+                {
+                    string command = txTextBox.Text;
+                    writeLineTextBox("tx", command);
+                    _serialPort.Write(command);
+                }
+                else
+                {
+                    MessageBox.Show("No device is connected!", "Error!");
+                }
+            }
+        }
+
+        private void emergencyStopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeLineTextBox("tx", "emergency_stop");
+            _serialPort.Write("emergency_stop");
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeLineTextBox("tx", "purge_open");
+            _serialPort.Write("purge_open");
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeLineTextBox("tx", "purge_close");
+            _serialPort.Write("purge_close");
+        }
+
+        private void ignitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeLineTextBox("tx", "ignition");
+            _serialPort.Write("ignition");
+        }
+
+        private void launchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeLineTextBox("tx", "launch");
+            _serialPort.Write("launch");
         }
     }
 }

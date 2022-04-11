@@ -38,15 +38,18 @@
             this.emergencyStopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refuelingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.customCommandToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.configureSerialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.RxRichTextBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.txTextBox = new System.Windows.Forms.TextBox();
             this.TxRichTextBox = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.ignitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -61,7 +64,7 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectionStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 783);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 788);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1552, 22);
             this.statusStrip1.TabIndex = 0;
@@ -115,9 +118,9 @@
             // 
             this.commandsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.emergencyStopToolStripMenuItem,
-            this.launchToolStripMenuItem,
             this.refuelingToolStripMenuItem,
-            this.customCommandToolStripMenuItem});
+            this.ignitionToolStripMenuItem,
+            this.launchToolStripMenuItem});
             this.commandsToolStripMenuItem.Enabled = false;
             this.commandsToolStripMenuItem.Name = "commandsToolStripMenuItem";
             this.commandsToolStripMenuItem.Size = new System.Drawing.Size(120, 29);
@@ -128,25 +131,23 @@
             this.emergencyStopToolStripMenuItem.Name = "emergencyStopToolStripMenuItem";
             this.emergencyStopToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.emergencyStopToolStripMenuItem.Text = "Emergency Stop";
+            this.emergencyStopToolStripMenuItem.Click += new System.EventHandler(this.emergencyStopToolStripMenuItem_Click);
             // 
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
             this.launchToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.launchToolStripMenuItem.Text = "Launch";
+            this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
             // 
             // refuelingToolStripMenuItem
             // 
+            this.refuelingToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem,
+            this.closeToolStripMenuItem});
             this.refuelingToolStripMenuItem.Name = "refuelingToolStripMenuItem";
             this.refuelingToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
-            this.refuelingToolStripMenuItem.Text = "Refueling";
-            // 
-            // customCommandToolStripMenuItem
-            // 
-            this.customCommandToolStripMenuItem.Name = "customCommandToolStripMenuItem";
-            this.customCommandToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
-            this.customCommandToolStripMenuItem.Text = "Custom command";
-            this.customCommandToolStripMenuItem.Click += new System.EventHandler(this.customCommandToolStripMenuItem_Click);
+            this.refuelingToolStripMenuItem.Text = "Purge valve";
             // 
             // helpToolStripMenuItem
             // 
@@ -157,19 +158,19 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(65, 29);
             this.helpToolStripMenuItem.Text = "Help";
             // 
-            // toolStripMenuItem1
-            // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(270, 34);
-            this.toolStripMenuItem1.Text = "Info";
-            this.toolStripMenuItem1.Click += new System.EventHandler(this.infoToolStripMenu_Click);
-            // 
             // configureSerialToolStripMenuItem
             // 
             this.configureSerialToolStripMenuItem.Name = "configureSerialToolStripMenuItem";
-            this.configureSerialToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.configureSerialToolStripMenuItem.Size = new System.Drawing.Size(239, 34);
             this.configureSerialToolStripMenuItem.Text = "Configure Serial";
             this.configureSerialToolStripMenuItem.Click += new System.EventHandler(this.configureSerialToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(239, 34);
+            this.toolStripMenuItem1.Text = "Info";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.infoToolStripMenu_Click);
             // 
             // splitContainer1
             // 
@@ -184,10 +185,11 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.txTextBox);
             this.splitContainer1.Panel2.Controls.Add(this.TxRichTextBox);
             this.splitContainer1.Panel2.Controls.Add(this.label2);
-            this.splitContainer1.Size = new System.Drawing.Size(1552, 750);
-            this.splitContainer1.SplitterDistance = 1041;
+            this.splitContainer1.Size = new System.Drawing.Size(1552, 755);
+            this.splitContainer1.SplitterDistance = 992;
             this.splitContainer1.TabIndex = 2;
             // 
             // RxRichTextBox
@@ -209,13 +211,22 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "RX";
             // 
+            // txTextBox
+            // 
+            this.txTextBox.Location = new System.Drawing.Point(3, 715);
+            this.txTextBox.Name = "txTextBox";
+            this.txTextBox.Size = new System.Drawing.Size(550, 31);
+            this.txTextBox.TabIndex = 2;
+            this.txTextBox.Text = "Send";
+            this.txTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txTextBoxKeyDown);
+            // 
             // TxRichTextBox
             // 
             this.TxRichTextBox.Enabled = false;
             this.TxRichTextBox.Location = new System.Drawing.Point(3, 41);
             this.TxRichTextBox.Name = "TxRichTextBox";
             this.TxRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.TxRichTextBox.Size = new System.Drawing.Size(501, 706);
+            this.TxRichTextBox.Size = new System.Drawing.Size(550, 668);
             this.TxRichTextBox.TabIndex = 1;
             this.TxRichTextBox.Text = "";
             // 
@@ -228,11 +239,32 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "TX";
             // 
+            // ignitionToolStripMenuItem
+            // 
+            this.ignitionToolStripMenuItem.Name = "ignitionToolStripMenuItem";
+            this.ignitionToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.ignitionToolStripMenuItem.Text = "Ignition";
+            this.ignitionToolStripMenuItem.Click += new System.EventHandler(this.ignitionToolStripMenuItem_Click);
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+            // 
+            // closeToolStripMenuItem
+            // 
+            this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
+            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1552, 805);
+            this.ClientSize = new System.Drawing.Size(1552, 810);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -274,7 +306,10 @@
         private RichTextBox RxRichTextBox;
         private RichTextBox TxRichTextBox;
         private ToolStripMenuItem toolStripMenuItem1;
-        private ToolStripMenuItem customCommandToolStripMenuItem;
         private ToolStripMenuItem configureSerialToolStripMenuItem;
+        private TextBox txTextBox;
+        private ToolStripMenuItem ignitionToolStripMenuItem;
+        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem closeToolStripMenuItem;
     }
 }
