@@ -10,6 +10,8 @@ namespace Ignitus_Control
         SerialPort _serialPort;
         string _log = "";
         string sessionID = DateTime.Now.ToString().Replace(":", "-").Replace(" ", "_");
+        public delegate void AddDataDelegate(String myString);
+        public AddDataDelegate myDelegate;
 
         public Form1()
         {
@@ -22,6 +24,20 @@ namespace Ignitus_Control
 
             logging(sessionID);
 
+            this.myDelegate = new AddDataDelegate(AddDataMethod);
+        }
+
+        public void AddDataMethod(String myString)
+        {
+            RxRichTextBox.Text +=  myString;
+        }
+
+        private void dataReceived(object sander, SerialDataReceivedEventArgs e)
+        {
+            SerialPort sp = (SerialPort) sander;
+            string s = sp.ReadExisting();
+
+            RxRichTextBox.Invoke(this.myDelegate, new Object[] { s });
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -77,11 +93,6 @@ namespace Ignitus_Control
             {
                 MessageBox.Show(ex.Message);
             }
-        }
-
-        private void dataReceived(object sander, SerialDataReceivedEventArgs e)
-        {
-            writeLineTextBox("rx", e.ToString());
         }
 
         private void configureSerialToolStripMenuItem_Click(object sender, EventArgs e)
