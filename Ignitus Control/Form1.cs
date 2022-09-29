@@ -3,12 +3,16 @@ using System.IO;
 using System.IO.Ports;
 using Microsoft.VisualBasic;
 using System.Text.Json;
+using System.Windows.Forms;
+using System.ComponentModel.Design;
 
 namespace Ignitus_Control
 {
-	public partial class Form1 : Form
+	public partial class Form : System.Windows.Forms.Form
 	{
-        private readonly string _json_marker = "This is a json marker, the following text is a json.";
+		private string _serial_start = "_JSONHEADER_";
+		private string _serial_stop = "_JSONFOOTER_";
+
         public readonly string _sessionID = Guid.NewGuid().ToString();
 
         public SerialPort _serialPort;
@@ -16,8 +20,6 @@ namespace Ignitus_Control
 
 		public delegate void writeToSerialDeletage(String message);
 		public writeToSerialDeletage _writeToSerialDeletage;
-		public delegate void AddDataDelegate(String myString);
-		public AddDataDelegate _addDataDelegate;
 
 		bool _isControlArmed = false;
 
@@ -31,18 +33,16 @@ namespace Ignitus_Control
 			ignition
         }
 
-		public Form1()
+		public Form()
 		{
 			InitializeComponent();
 
 			//Serial Port Config
 			_serialPort = new SerialPort();
 			_serialPort.BaudRate = 9600;
-			_serialPort.DataReceived += new SerialDataReceivedEventHandler(dataReceived);
 
 			_writeToSerialDeletage = new writeToSerialDeletage(writeToSerial);
-			_addDataDelegate = new AddDataDelegate(AddDataMethod);
-		}
+        }
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
@@ -54,60 +54,95 @@ namespace Ignitus_Control
 		
 		public void checkSafetySwitch()
 		{
-			string goToATMode = "+++";
-			string ATIS = "ATIS \r";
+			string command_ATMode = "+++";
+			string command_ATIS = "ATIS \r";
+            string command_exit_ATMode = "ATCN \r";
+            string command_get_data = "data";
 
 			while (true)
 			{
-                Thread.Sleep(2000);
+                Thread.Sleep(500);
+
 				if (_serialPort.IsOpen)
 				{
-					_serialPort.Write(goToATMode);
-                    Thread.Sleep(1000);
-                    _serialPort.Write(ATIS);
-					Thread.Sleep(1000);
+					// Getting the state of I/O from the xbee
+					_serialPort.Write(command_ATMode);
+
+					while (_serialPort.BytesToRead < 3)
+					{
+						Thread.Sleep(250);
+					}
+
+                    _serialPort.Write(command_ATIS);
+
+					while (_serialPort.BytesToRead < 17)
+					{
+						Thread.Sleep(15);
+					}
+
+                    BeginInvoke((MethodInvoker)delegate () { updateSafetySwitchStatus(_serialPort.ReadExisting()); });
+
+                    _serialPort.Write(command_exit_ATMode);
+
+                    while (_serialPort.BytesToRead < 3)
+                    {
+                        Thread.Sleep(250);
+                    }
+
+					
+
+                    // Getting the data from the rocket
+                    string buffer = "";
+					_serialPort.DiscardInBuffer();
+
+                    string s = _serialPort.ReadExisting();
+
+                    _serialPort.Write(command_get_data);
+
+					while (!buffer.Contains(_serial_stop))
+					{
+						if (_serialPort.BytesToRead > 0)
+						{
+							buffer += _serialPort.ReadExisting();
+                            _serialPort.DiscardInBuffer();
+                        }
+
+                        Thread.Sleep(15);
+                    }
+
+                    _serialPort.DiscardInBuffer();
+
+                    BeginInvoke((MethodInvoker)delegate () { updateData(buffer); });
                 }
-			}
-		}
-
-		public void AddDataMethod(String myString)
-		{
-			RxRichTextBox.Text +=  myString;
-		}
-
-		private void dataReceived(object sander, SerialDataReceivedEventArgs e)
-		{
-			SerialPort sp = (SerialPort) sander;
-			string s = sp.ReadExisting();
-
-			if (s.Contains("01\r0002\r00\r"))
-			{
-				updateSafetySwitchStatus(s);
-			}
-			else if (s.Contains(_json_marker))
-			{
-				RxRichTextBox.Invoke(this._addDataDelegate, new Object[] { s });
-				updateData(s.Replace(_json_marker, "")); 
 			}
 		}
 
 		private void updateData(string s)
 		{
-			Data? data = JsonSerializer.Deserialize<Data>(s);
+			string json = s.Replace(_serial_start, "");
+			json = json.Replace(_serial_stop, "");
+
+			system_data? data = null;
+			
+			try
+			{
+				data = JsonSerializer.Deserialize<system_data>(json);
+            }
+			catch
+			{
+				Console.WriteLine(s);
+			}
 
 			if (data != null)
-				updateUiData(data.tankPressure, 
-							 data.tankTemperature, 
-							 data.enginePressure, 
-							 data.engineTemperature, 
-							 data.isBattery, 
-							 data.isRocketArmed, 
-							 data.isIgnited);
+			{
+				updateUiData(data);
+				logging(data);
+            }
         }
 
 		public void updateSafetySwitchStatus(string immediateSample)
 		{
-			if (immediateSample == "01\r0002\r00\r0000")
+			if (immediateSample.Contains("01\r0002\r00\r0000"))
 			{
 				controlArmedLabel.ForeColor = Color.Red;
 				controlArmedLabel.Text = "Control Armed";
@@ -115,7 +150,7 @@ namespace Ignitus_Control
 			}
 			else //if (immediateSample == "01\r0002\r00\r0002")
 			{
-				controlArmedLabel.ForeColor = Color.Green;
+				controlArmedLabel.ForeColor = Color.LimeGreen;
 				controlArmedLabel.Text = "Control Not Armed";
 				_isControlArmed = false;
 			}
@@ -132,11 +167,6 @@ namespace Ignitus_Control
 				foreach (string s in SerialPort.GetPortNames())
 				{
 					connectDeviceToolStripMenuItem.DropDownItems.Add(s);
-				}
-
-				if (connectDeviceToolStripMenuItem.DropDownItems.Count == 0)
-				{
-                    RxRichTextBox.Text += ("No serial devices detected. \n\r");
 				}
 			}
 			else
@@ -162,7 +192,6 @@ namespace Ignitus_Control
 				connectionStatusLabel.Text = "Device connected";
 				connectionStatusLabel.ForeColor = Color.Green;
 				commandsToolStripMenuItem.Enabled = true;
-                RxRichTextBox.Text += ("Serial connection opened on: " + _serialPort.PortName.ToString() + "\n\r");;
 			}
 			catch (Exception ex)
 			{
@@ -195,27 +224,28 @@ namespace Ignitus_Control
 
 			if (saveFileDialog.ShowDialog() == DialogResult.OK)
 			{
-				File.WriteAllTextAsync(saveFileDialog.FileName, RxRichTextBox.Text);
+				// ToDo: save the contant of the temp file to save location
 			}
 		}
 
-		private void logging(Data data)
+		private void logging(system_data data)
 		{
+			/*
 			//auto save to local temp folder
-			string path = $"{_sessionID}/log.csv";
+			string path = $"{_sessionID}.csv";
 
 			if (!Directory.Exists($"{_sessionID}"))
 				Directory.CreateDirectory($"{_sessionID}");
 
 			string line = DateTime.Now.ToString() + "; " +
-						  data.tankPressure.ToString() + "; " +
-                          data.tankTemperature.ToString() + "; " +
+						  data.tankPressure1.ToString() + "; " +
+                          data.tankTemperature1.ToString() + "; " +
                           data.enginePressure.ToString() + "; " +
                           data.engineTemperature.ToString() + "; " +
-                          data.isBattery.ToString() + "; " +
-                          data.isRocketArmed.ToString() + "; " +
+                          data.battery.ToString() + "; " +
+                          data.armed.ToString() + "; " +
                           _isControlArmed.ToString() + "; " +
-                          data.isIgnited.ToString() + "; \n\r";
+                          data.ignition.ToString() + ";";
 
             if (File.Exists(path))
 			{
@@ -229,9 +259,10 @@ namespace Ignitus_Control
 									"Is Ignition Batterie Good; " +
 									"Is Rocket Armed; " +
 									"Is Control Armed; " +
-									"Is Ignition On; \n\r";
+									"Is Ignition On;";
 
-					writer.WriteLine(header + data);
+					writer.WriteLine(header);
+					writer.WriteLine(line);
 				}
 			}
 			else
@@ -241,6 +272,7 @@ namespace Ignitus_Control
 					writer.WriteLine(data);
 				}
 			}
+			*/
 		}
 
 		private void writeToSerial(String message)
@@ -249,8 +281,16 @@ namespace Ignitus_Control
 			{
 				if (_serialPort.IsOpen)
 				{
-                    TxRichTextBox.Text += (message + "\n\r"); ;
-                    _serialPort.Write(message);
+					if (TxRichTextBox.InvokeRequired)
+					{
+                        TxRichTextBox.BeginInvoke((MethodInvoker) delegate() { TxRichTextBox.Text += message + "\n\r"; });
+                        _serialPort.Write(message);
+                    }
+					else
+					{
+                        TxRichTextBox.Text += (message + "\n\r"); ;
+                        _serialPort.Write(message);
+                    }
 				}
 				else
 				{
@@ -259,46 +299,88 @@ namespace Ignitus_Control
 			}
         }
 
-		private void updateUiData(double tankPress, double tankTemp, double enginePress, double engineTemp, bool battery, bool rocketArmed, bool ignited)
+		private void updateUiData(system_data data)
 		{
-			tankPressureLabel.Text = tankPress.ToString();
-			tankTemperatureLabel.Text = tankTemp.ToString();
-			enginePressureLabel.Text = enginePress.ToString();
-			engineTemperatureLabel.Text = engineTemp.ToString();
+			tankPressureLabel.Text = data.tank1.pressure.ToString();
+			tankTemperatureLabel.Text = data.tank1.temp.ToString();
+			enginePressureLabel.Text = data.engine.pressure.ToString();
+			engineTemperatureLabel.Text = data.engine.temp.ToString();
 
-			if (battery)
-				batteryLabel.ForeColor = Color.Green;
-			else 
-				batteryLabel.ForeColor = Color.Red;
+			updateBatteryLabel(data.battery);
+			updateArmedLabel(data.armed);
+            updateIgnitionLabel(data.ignition);
+            updateMainValveClosedLabel(data.main_valve);
+			updatePurgeValveLabel(data.purge_valve);
+        }
 
-			if (rocketArmed)
-			{
-				rocketArmedLabel.ForeColor = Color.Red;
-				rocketArmedLabel.Text = "Rocket Armed";
-			}
-			else
-			{
+		private void updateBatteryLabel(bool state)
+		{
+            if (state)
+                batteryLabel.ForeColor = Color.Green;
+            else
+                batteryLabel.ForeColor = Color.Red;
+        }
+
+		private void updateArmedLabel(bool state)
+		{
+            if (state)
+            {
+                rocketArmedLabel.ForeColor = Color.Red;
+                rocketArmedLabel.Text = "Rocket Armed";
+            }
+            else
+            {
                 rocketArmedLabel.ForeColor = Color.Green;
                 rocketArmedLabel.Text = "Rocket Not Armed";
             }
+        }
 
-			if (ignited)
+		private void updateIgnitionLabel(bool state)
+		{
+            if (state)
+            {
+                ignitedLabel.ForeColor = Color.Red;
+                ignitedLabel.Text = "Ignited";
+            }
+            else
+            {
+                ignitedLabel.ForeColor = Color.Green;
+                ignitedLabel.Text = "Not Ignited";
+            }
+        }
+
+		private void updateMainValveClosedLabel(bool state)
+		{
+			if (state)
 			{
-				ignitedLabel.ForeColor = Color.Red;
-				ignitedLabel.Text = "Ignited";
+				mainValveLabel.ForeColor = Color.Red;
+				mainValveLabel.Text = "Main Valve Open";
 			}
 			else
 			{
-				ignitedLabel.ForeColor = Color.Green;
-				ignitedLabel.Text = "Not Ignited";
+				mainValveLabel.ForeColor = Color.Green;
+
 			}
 		}
+
+        private void updatePurgeValveLabel(bool state)
+		{
+            if (state)
+            {
+                purgeValveLabel.ForeColor = Color.Red;
+                purgeValveLabel.Text = "Purge Valve Closed";
+            }
+            else
+            {
+                purgeValveLabel.ForeColor = Color.LimeGreen;
+                purgeValveLabel.Text = "Purge Valve Open";
+            }
+        }
 
 		/// ALL THE COMMAND DROP DOWN MENU METHOD
 		private void emergencyStopToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			writeToSerial(Commands.emergency_stop.ToString());
-
         }
 
 		private void openPusgeValve(object sender, EventArgs e)
@@ -348,8 +430,7 @@ namespace Ignitus_Control
 
                 if (_serialPort.IsOpen)
                 {
-                    TxRichTextBox.Text += (command + "\n\r"); ;
-                    _serialPort.Write(command);
+                    writeToSerial(command);
                 }
                 else
                 {
@@ -369,6 +450,11 @@ namespace Ignitus_Control
                             , "Info");
         }
 
+		/// <summary>
+		/// Close it all down
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
