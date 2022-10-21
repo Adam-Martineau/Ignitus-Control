@@ -40,8 +40,10 @@ namespace Ignitus_Control
 			//Serial Port Config
 			_serialPort = new SerialPort();
 			_serialPort.BaudRate = 9600;
+			_serialPort.DataReceived += new SerialDataReceivedEventHandler(comIndicator);
 
-			_writeToSerialDeletage = new writeToSerialDeletage(writeToSerial);
+
+            _writeToSerialDeletage = new writeToSerialDeletage(writeToSerial);
         }
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -61,21 +63,20 @@ namespace Ignitus_Control
 
 			while (true)
 			{
-                Thread.Sleep(500);
-
 				if (_serialPort.IsOpen)
 				{
-					// Getting the state of I/O from the xbee
-					_serialPort.Write(command_ATMode);
+					/*
+                    // Getting the state of I/O from the xbee
+                    _serialPort.Write(command_ATMode);
 
-					while (_serialPort.BytesToRead < 3)
+                    while (_serialPort.BytesToRead < 3)
 					{
-						Thread.Sleep(250);
+						Thread.Sleep(15);
 					}
 
                     _serialPort.Write(command_ATIS);
 
-					while (_serialPort.BytesToRead < 17)
+                    while (_serialPort.BytesToRead < 17)
 					{
 						Thread.Sleep(15);
 					}
@@ -86,20 +87,23 @@ namespace Ignitus_Control
 
                     while (_serialPort.BytesToRead < 3)
                     {
-                        Thread.Sleep(250);
+                        Thread.Sleep(15);
                     }
+					*/
 
-					
+                    Thread.Sleep(1);
+                    _serialPort.DiscardInBuffer();
 
                     // Getting the data from the rocket
                     string buffer = "";
-					_serialPort.DiscardInBuffer();
 
                     string s = _serialPort.ReadExisting();
 
                     _serialPort.Write(command_get_data);
 
-					while (!buffer.Contains(_serial_stop))
+
+					int wait = 0;
+					while (!buffer.Contains(_serial_stop) && wait < 200)
 					{
 						if (_serialPort.BytesToRead > 0)
 						{
@@ -107,14 +111,25 @@ namespace Ignitus_Control
                             _serialPort.DiscardInBuffer();
                         }
 
-                        Thread.Sleep(15);
+						wait++;
+                        Thread.Sleep(1);
                     }
 
                     _serialPort.DiscardInBuffer();
 
                     BeginInvoke((MethodInvoker)delegate () { updateData(buffer); });
+
+                    Thread.Sleep(100);
                 }
 			}
+		}
+
+		private void comIndicator(object sender, SerialDataReceivedEventArgs handler)
+		{
+			if (comLight.ForeColor == Color.DarkRed)
+				comLight.ForeColor = Color.Red;
+			else
+				comLight.ForeColor = Color.DarkRed;
 		}
 
 		private void updateData(string s)
@@ -123,8 +138,8 @@ namespace Ignitus_Control
 			json = json.Replace(_serial_stop, "");
 
 			system_data? data = null;
-			
-			try
+
+            try
 			{
 				data = JsonSerializer.Deserialize<system_data>(json);
             }
@@ -132,12 +147,28 @@ namespace Ignitus_Control
 			{
 				Console.WriteLine(s);
 			}
-
+			
 			if (data != null)
 			{
+				data = calibrateData(data);
 				updateUiData(data);
 				logging(data);
             }
+        }
+
+		private system_data calibrateData(system_data data)
+		{
+			if (data.tank1_pressure < 100)
+				data.tank1_pressure = 0;
+			else
+				data.tank1_pressure = data.tank1_pressure - 100;
+
+            if (data.tank2_pressure < 100)
+                data.tank2_pressure = 0;
+            else
+                data.tank2_pressure = data.tank2_pressure - 100;
+
+			return data;
         }
 
 		public void updateSafetySwitchStatus(string immediateSample)
@@ -190,7 +221,7 @@ namespace Ignitus_Control
 				connectDeviceToolStripMenuItem.DropDownItems.Clear();
 				connectDeviceToolStripMenuItem.Text = "Disconnect Device";
 				connectionStatusLabel.Text = "Device connected";
-				connectionStatusLabel.ForeColor = Color.Green;
+				connectionStatusLabel.ForeColor = Color.LimeGreen;
 				commandsToolStripMenuItem.Enabled = true;
 			}
 			catch (Exception ex)
@@ -230,7 +261,6 @@ namespace Ignitus_Control
 
 		private void logging(system_data data)
 		{
-			/*
 			//auto save to local temp folder
 			string path = $"{_sessionID}.csv";
 
@@ -238,10 +268,10 @@ namespace Ignitus_Control
 				Directory.CreateDirectory($"{_sessionID}");
 
 			string line = DateTime.Now.ToString() + "; " +
-						  data.tankPressure1.ToString() + "; " +
-                          data.tankTemperature1.ToString() + "; " +
-                          data.enginePressure.ToString() + "; " +
-                          data.engineTemperature.ToString() + "; " +
+						  data.tank1_pressure.ToString() + "; " +
+                          data.tank1_temp.ToString() + "; " +
+                          data.tank2_pressure.ToString() + "; " +
+                          data.tank2_temp.ToString() + "; " +
                           data.battery.ToString() + "; " +
                           data.armed.ToString() + "; " +
                           _isControlArmed.ToString() + "; " +
@@ -252,10 +282,10 @@ namespace Ignitus_Control
 				using (StreamWriter writer = File.CreateText(path))
 				{
 					string header = "Timestamp; " +
-									"Tank Pressure; " +
-									"Tank Temperature; " +
-									"Engine Pressure; " +
-									"Engine Temperature; " +
+									"Tank1 Pressure; " +
+									"Tank1 Temperature; " +
+									"Tank2 Pressure; " +
+									"Tank2 Temperature; " +
 									"Is Ignition Batterie Good; " +
 									"Is Rocket Armed; " +
 									"Is Control Armed; " +
@@ -272,7 +302,6 @@ namespace Ignitus_Control
 					writer.WriteLine(data);
 				}
 			}
-			*/
 		}
 
 		private void writeToSerial(String message)
@@ -301,10 +330,13 @@ namespace Ignitus_Control
 
 		private void updateUiData(system_data data)
 		{
-			tankPressureLabel.Text = data.tank1.pressure.ToString();
-			tankTemperatureLabel.Text = data.tank1.temp.ToString();
-			enginePressureLabel.Text = data.engine.pressure.ToString();
-			engineTemperatureLabel.Text = data.engine.temp.ToString();
+			tankPressureLabel.Text = data.tank1_pressure.ToString();
+			tankTemperatureLabel.Text = data.tank1_temp.ToString();
+			tank2PressureLabel.Text = data.tank2_pressure.ToString();
+			tank2TemperatureLabel.Text = data.tank2_temp.ToString();
+			powerLabel.Text = data.power_power.ToString();
+			voltageLabel.Text = data.power_voltage.ToString();
+			currentLabel.Text = data.power_current.ToString();
 
 			updateBatteryLabel(data.battery);
 			updateArmedLabel(data.armed);
@@ -316,7 +348,7 @@ namespace Ignitus_Control
 		private void updateBatteryLabel(bool state)
 		{
             if (state)
-                batteryLabel.ForeColor = Color.Green;
+                batteryLabel.ForeColor = Color.LimeGreen;
             else
                 batteryLabel.ForeColor = Color.Red;
         }
@@ -330,7 +362,7 @@ namespace Ignitus_Control
             }
             else
             {
-                rocketArmedLabel.ForeColor = Color.Green;
+                rocketArmedLabel.ForeColor = Color.LimeGreen;
                 rocketArmedLabel.Text = "Rocket Not Armed";
             }
         }
@@ -344,7 +376,7 @@ namespace Ignitus_Control
             }
             else
             {
-                ignitedLabel.ForeColor = Color.Green;
+                ignitedLabel.ForeColor = Color.LimeGreen;
                 ignitedLabel.Text = "Not Ignited";
             }
         }
@@ -358,7 +390,7 @@ namespace Ignitus_Control
 			}
 			else
 			{
-				mainValveLabel.ForeColor = Color.Green;
+				mainValveLabel.ForeColor = Color.LimeGreen;
 
 			}
 		}

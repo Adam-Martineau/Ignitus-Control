@@ -50,15 +50,23 @@
             this.configureSerialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.comLight = new System.Windows.Forms.Label();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.currentLabel = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.powerLabel = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.voltageLabel = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tank2PressureLabel = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.tank2TemperatureLabel = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.tankPressureLabel = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.engineTemperatureLabel = new System.Windows.Forms.Label();
             this.tankTemperatureLabel = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.enginePressureLabel = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.mainValveLabel = new System.Windows.Forms.Label();
             this.batteryLabel = new System.Windows.Forms.Label();
@@ -77,6 +85,7 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -88,9 +97,9 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectionStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 973);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 1007);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1552, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1667, 22);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -110,7 +119,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1552, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1667, 33);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -265,6 +274,8 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.comLight);
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox4);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox3);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox2);
             this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
@@ -275,26 +286,147 @@
             this.splitContainer1.Panel2.Controls.Add(this.txTextBox);
             this.splitContainer1.Panel2.Controls.Add(this.TxRichTextBox);
             this.splitContainer1.Panel2.Controls.Add(this.label2);
-            this.splitContainer1.Size = new System.Drawing.Size(1552, 940);
-            this.splitContainer1.SplitterDistance = 791;
+            this.splitContainer1.Size = new System.Drawing.Size(1667, 974);
+            this.splitContainer1.SplitterDistance = 873;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // comLight
+            // 
+            this.comLight.AutoSize = true;
+            this.comLight.Font = new System.Drawing.Font("Segoe UI", 15F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.comLight.ForeColor = System.Drawing.Color.DarkRed;
+            this.comLight.Location = new System.Drawing.Point(12, 28);
+            this.comLight.Name = "comLight";
+            this.comLight.Size = new System.Drawing.Size(60, 41);
+            this.comLight.TabIndex = 21;
+            this.comLight.Text = "🚨";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.label11);
+            this.groupBox4.Controls.Add(this.currentLabel);
+            this.groupBox4.Controls.Add(this.label15);
+            this.groupBox4.Controls.Add(this.powerLabel);
+            this.groupBox4.Controls.Add(this.label17);
+            this.groupBox4.Controls.Add(this.voltageLabel);
+            this.groupBox4.Location = new System.Drawing.Point(407, 97);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(461, 416);
+            this.groupBox4.TabIndex = 20;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "Electrical Systems Data";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label11.Location = new System.Drawing.Point(6, 135);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(263, 54);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Input Current";
+            // 
+            // currentLabel
+            // 
+            this.currentLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.currentLabel.Location = new System.Drawing.Point(295, 135);
+            this.currentLabel.Name = "currentLabel";
+            this.currentLabel.Size = new System.Drawing.Size(160, 54);
+            this.currentLabel.TabIndex = 11;
+            this.currentLabel.Text = "0.0";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label15.Location = new System.Drawing.Point(6, 27);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(131, 54);
+            this.label15.TabIndex = 2;
+            this.label15.Text = "Power";
+            // 
+            // powerLabel
+            // 
+            this.powerLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.powerLabel.Location = new System.Drawing.Point(295, 27);
+            this.powerLabel.Name = "powerLabel";
+            this.powerLabel.Size = new System.Drawing.Size(160, 54);
+            this.powerLabel.TabIndex = 3;
+            this.powerLabel.Text = "0.0";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label17.Location = new System.Drawing.Point(6, 81);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(283, 54);
+            this.label17.TabIndex = 4;
+            this.label17.Text = "Input Volatage";
+            // 
+            // voltageLabel
+            // 
+            this.voltageLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.voltageLabel.Location = new System.Drawing.Point(295, 81);
+            this.voltageLabel.Name = "voltageLabel";
+            this.voltageLabel.Size = new System.Drawing.Size(160, 54);
+            this.voltageLabel.TabIndex = 5;
+            this.voltageLabel.Text = "0.0";
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.tank2PressureLabel);
+            this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.tank2TemperatureLabel);
             this.groupBox3.Controls.Add(this.label3);
             this.groupBox3.Controls.Add(this.tankPressureLabel);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.engineTemperatureLabel);
             this.groupBox3.Controls.Add(this.tankTemperatureLabel);
-            this.groupBox3.Controls.Add(this.label6);
-            this.groupBox3.Controls.Add(this.label8);
-            this.groupBox3.Controls.Add(this.enginePressureLabel);
-            this.groupBox3.Location = new System.Drawing.Point(12, 478);
+            this.groupBox3.Location = new System.Drawing.Point(12, 519);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(391, 257);
+            this.groupBox3.Size = new System.Drawing.Size(858, 250);
             this.groupBox3.TabIndex = 19;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Sub-Systems Data";
+            this.groupBox3.Text = "Engine Systems Data";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label4.Location = new System.Drawing.Point(6, 135);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(236, 54);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Tank2 Press.";
+            // 
+            // tank2PressureLabel
+            // 
+            this.tank2PressureLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.tank2PressureLabel.Location = new System.Drawing.Point(325, 135);
+            this.tank2PressureLabel.Name = "tank2PressureLabel";
+            this.tank2PressureLabel.Size = new System.Drawing.Size(350, 54);
+            this.tank2PressureLabel.TabIndex = 11;
+            this.tank2PressureLabel.Text = "0.0";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label9.Location = new System.Drawing.Point(7, 189);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(241, 54);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "Tank2 Temp.";
+            // 
+            // tank2TemperatureLabel
+            // 
+            this.tank2TemperatureLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.tank2TemperatureLabel.Location = new System.Drawing.Point(325, 189);
+            this.tank2TemperatureLabel.Name = "tank2TemperatureLabel";
+            this.tank2TemperatureLabel.Size = new System.Drawing.Size(350, 54);
+            this.tank2TemperatureLabel.TabIndex = 13;
+            this.tank2TemperatureLabel.Text = "0.0";
             // 
             // label3
             // 
@@ -302,16 +434,16 @@
             this.label3.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label3.Location = new System.Drawing.Point(6, 27);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(214, 54);
+            this.label3.Size = new System.Drawing.Size(236, 54);
             this.label3.TabIndex = 2;
-            this.label3.Text = "Tank Press.";
+            this.label3.Text = "Tank1 Press.";
             // 
             // tankPressureLabel
             // 
             this.tankPressureLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.tankPressureLabel.Location = new System.Drawing.Point(226, 27);
+            this.tankPressureLabel.Location = new System.Drawing.Point(325, 27);
             this.tankPressureLabel.Name = "tankPressureLabel";
-            this.tankPressureLabel.Size = new System.Drawing.Size(97, 54);
+            this.tankPressureLabel.Size = new System.Drawing.Size(350, 54);
             this.tankPressureLabel.TabIndex = 3;
             this.tankPressureLabel.Text = "0.0";
             // 
@@ -321,65 +453,27 @@
             this.label5.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label5.Location = new System.Drawing.Point(6, 81);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(219, 54);
+            this.label5.Size = new System.Drawing.Size(241, 54);
             this.label5.TabIndex = 4;
-            this.label5.Text = "Tank Temp.";
-            // 
-            // engineTemperatureLabel
-            // 
-            this.engineTemperatureLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.engineTemperatureLabel.Location = new System.Drawing.Point(264, 189);
-            this.engineTemperatureLabel.Name = "engineTemperatureLabel";
-            this.engineTemperatureLabel.Size = new System.Drawing.Size(97, 54);
-            this.engineTemperatureLabel.TabIndex = 9;
-            this.engineTemperatureLabel.Text = "0.0";
+            this.label5.Text = "Tank1 Temp.";
             // 
             // tankTemperatureLabel
             // 
             this.tankTemperatureLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.tankTemperatureLabel.Location = new System.Drawing.Point(226, 81);
+            this.tankTemperatureLabel.Location = new System.Drawing.Point(325, 81);
             this.tankTemperatureLabel.Name = "tankTemperatureLabel";
-            this.tankTemperatureLabel.Size = new System.Drawing.Size(97, 54);
+            this.tankTemperatureLabel.Size = new System.Drawing.Size(350, 54);
             this.tankTemperatureLabel.TabIndex = 5;
             this.tankTemperatureLabel.Text = "0.0";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label6.Location = new System.Drawing.Point(3, 189);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(260, 54);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Engine Temp.";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label8.Location = new System.Drawing.Point(3, 135);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(255, 54);
-            this.label8.TabIndex = 6;
-            this.label8.Text = "Engine Press.";
-            // 
-            // enginePressureLabel
-            // 
-            this.enginePressureLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.enginePressureLabel.Location = new System.Drawing.Point(264, 135);
-            this.enginePressureLabel.Name = "enginePressureLabel";
-            this.enginePressureLabel.Size = new System.Drawing.Size(97, 54);
-            this.enginePressureLabel.TabIndex = 7;
-            this.enginePressureLabel.Text = "0.0";
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.mainValveLabel);
             this.groupBox2.Controls.Add(this.batteryLabel);
             this.groupBox2.Controls.Add(this.purgeValveLabel);
-            this.groupBox2.Location = new System.Drawing.Point(12, 267);
+            this.groupBox2.Location = new System.Drawing.Point(12, 308);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(397, 205);
+            this.groupBox2.Size = new System.Drawing.Size(391, 205);
             this.groupBox2.TabIndex = 18;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Sub-Systems States";
@@ -422,9 +516,9 @@
             this.groupBox1.Controls.Add(this.controlArmedLabel);
             this.groupBox1.Controls.Add(this.rocketArmedLabel);
             this.groupBox1.Controls.Add(this.ignitedLabel);
-            this.groupBox1.Location = new System.Drawing.Point(12, 56);
+            this.groupBox1.Location = new System.Drawing.Point(12, 97);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(397, 205);
+            this.groupBox1.Size = new System.Drawing.Size(391, 205);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Launch Systems";
@@ -473,10 +567,10 @@
             // 
             // txTextBox
             // 
-            this.txTextBox.Location = new System.Drawing.Point(6, 897);
+            this.txTextBox.Location = new System.Drawing.Point(6, 940);
             this.txTextBox.Name = "txTextBox";
             this.txTextBox.PlaceholderText = "SEND";
-            this.txTextBox.Size = new System.Drawing.Size(739, 31);
+            this.txTextBox.Size = new System.Drawing.Size(772, 31);
             this.txTextBox.TabIndex = 2;
             this.txTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txTextBoxKeyDown);
             // 
@@ -486,7 +580,7 @@
             this.TxRichTextBox.Location = new System.Drawing.Point(6, 28);
             this.TxRichTextBox.Name = "TxRichTextBox";
             this.TxRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.TxRichTextBox.Size = new System.Drawing.Size(739, 863);
+            this.TxRichTextBox.Size = new System.Drawing.Size(772, 906);
             this.TxRichTextBox.TabIndex = 1;
             this.TxRichTextBox.Text = "";
             // 
@@ -503,7 +597,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1552, 995);
+            this.ClientSize = new System.Drawing.Size(1667, 1029);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -521,6 +615,8 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -560,10 +656,6 @@
         private ToolStripMenuItem openToolStripMenuItem1;
         private ToolStripMenuItem closeToolStripMenuItem1;
         private ToolStripMenuItem enterATModeToolStripMenuItem;
-        public Label engineTemperatureLabel;
-        private Label label6;
-        public Label enginePressureLabel;
-        private Label label8;
         public Label tankTemperatureLabel;
         private Label label5;
         public Label tankPressureLabel;
@@ -577,5 +669,17 @@
         private Label purgeValveLabel;
         private GroupBox groupBox3;
         private GroupBox groupBox2;
+        private GroupBox groupBox4;
+        private Label label11;
+        public Label currentLabel;
+        private Label label15;
+        public Label powerLabel;
+        private Label label17;
+        public Label voltageLabel;
+        private Label label4;
+        public Label tank2PressureLabel;
+        private Label label9;
+        public Label tank2TemperatureLabel;
+        private Label comLight;
     }
 }
