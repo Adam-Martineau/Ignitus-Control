@@ -5,6 +5,7 @@ using Microsoft.VisualBasic;
 using System.Text.Json;
 using System.Windows.Forms;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 
 namespace Ignitus_Control
 {
@@ -255,8 +256,21 @@ namespace Ignitus_Control
 
 			if (saveFileDialog.ShowDialog() == DialogResult.OK)
 			{
-				// ToDo: save the contant of the temp file to save location
-			}
+                string destFile = saveFileDialog.FileName;
+				string sourceFile = $"{_sessionID}";
+
+				if (File.Exists(destFile))
+				{
+					DialogResult dialogResult = MessageBox.Show($"The file {destFile} already exists. Do you want to replace it?", "File already exists.", MessageBoxButtons.YesNo);
+
+                    if (dialogResult == DialogResult.No)
+                    {
+                       return;
+                    }
+                }
+
+                File.Copy(sourceFile, destFile, true);
+            }
 		}
 
 		private void logging(system_data data)
